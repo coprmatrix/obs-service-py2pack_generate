@@ -1,0 +1,35 @@
+<service name="py2pack_generate">
+  <summary>Use of the py2pack_generate command</summary>
+  <description>Generate a spec file for a PyPI module</description>
+  <parameter name="name">
+    <description>Package name.</description>
+  </parameter>
+  <parameter name="version">
+    <description>Package version (optional)</description>
+  </parameter>
+  <parameter name="source-url">
+    <description>Source url (optional)</description>
+  </parameter>
+  <parameter name="source-glob">
+    <description>Source glob template (optional)</description>
+  </parameter>
+  <parameter name="local">
+    <description>Build from local package</description>
+    <allowedvalue>enable</allowedvalue>
+    <allowedvalue>disable</allowedvalue>
+  </parameter>
+  <parameter name="noop">
+    <description>Do nothing (default: disable)</description>
+    <allowedvalue>enable</allowedvalue>
+    <allowedvalue>disable</allowedvalue>
+  </parameter>
+  <parameter name="localfile">
+    <description>Path to the local PKG-INFO or json metadata (optional)</description>
+  </parameter>
+  <parameter name="template">
+    <description>File template</description>
+  </parameter>
+  <parameter name="filename">
+    <description>Output filename (optional)</description>
+  </parameter>
+</service>
