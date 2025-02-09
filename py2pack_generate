@@ -4,6 +4,7 @@ import argparse
 from pathlib import Path
 import sys
 from os import getcwd
+import glob
 parser_generate = argparse.ArgumentParser(description='generate RPM spec or DEB dsc file from a package')
 parser_generate.add_argument('--name', help='package name')
 parser_generate.add_argument('--version', nargs='?', help='package version (optional)')
