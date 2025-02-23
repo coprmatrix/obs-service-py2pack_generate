@@ -20,7 +20,7 @@ Name:           obs-service-py2pack_generate
 Summary:        An OBS source service: Create spec files for cpan sources
 License:        GPL-2.0-or-later
 Group:          Development/Tools/Building
-Version:        0.4
+Version:        0.5
 Release:        0
 Source:         py2pack_generate
 Source1:        py2pack_generate.service

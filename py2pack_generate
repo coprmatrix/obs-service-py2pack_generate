@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-from py2pack import generate, file_template_list
+from py2pack import generate, file_template_list, DEFAULT_TEMPLATE, Munch
 import argparse
 from pathlib import Path
 import sys
@@ -8,28 +8,51 @@ import glob
 parser_generate = argparse.ArgumentParser(description='generate RPM spec or DEB dsc file from a package')
 parser_generate.add_argument('--name', help='package name')
 parser_generate.add_argument('--version', nargs='?', help='package version (optional)')
-parser_generate.add_argument('--source-url', default=None, help='source url (optional)')
-parser_generate.add_argument('--source-glob', help='source glob template (optional)')
-parser_generate.add_argument('--local', default='disable', choices=['enable', 'disable'], help='build from local package')
+parser_generate.add_argument('--source-url', default=None, help='source url')
+parser_generate.add_argument('--home-page', default=None, help='home page url')
+parser_generate.add_argument('--summary', default=None, help='summary text')
+parser_generate.add_argument('--license', default=None, help='license text')
+parser_generate.add_argument('--maintainer', default=None, help='maintainer')
+parser_generate.add_argument('--description', default=None, help='description text')
+parser_generate.add_argument('--source-glob', help='source glob template')
+parser_generate.add_argument('--localfile', default='', help='path to the local PKG-INFO or json metadata')
+parser_generate.add_argument('-t', '--template', choices=file_template_list(), default=DEFAULT_TEMPLATE, help='file template')
+parser_generate.add_argument('-f', '--filename', help='spec filename (optional)')
 parser_generate.add_argument('--noop', default='disable', choices=['enable', 'disable'], help='do nothing')
-parser_generate.add_argument('--localfile', default='', help='path to the local PKG-INFO or json metadata (optional)')
-parser_generate.add_argument('--template', choices=file_template_list(), default='opensuse.spec', help='file template')
-parser_generate.add_argument('--filename', help='output filename (optional)')
 parser_generate.add_argument('--outdir', help='output directory', default=getcwd())
 args = parser_generate.parse_args(sys.argv[1:])
 if args.noop == 'enable':
     exit(0)
 
-args.run = None
-args.local = args.local == 'enable'
+
+def make_absolute(base_path, target_path):
+    # Create Path objects
+    base = Path(base_path)
+    target = Path(target_path)
+
+    # If the target path is already absolute, return it
+    if target.is_absolute():
+        return target
+    else:
+        # Make the target path absolute based on the base path
+        return (base / target).resolve()
+
+args = Munch(args.__dict__)
 
 filename = args.filename
+outdir = args.outdir
+
 if not filename:
     filename = 'python-'+args.name+Path(args.template).suffix
-filename = Path(filename)
-if not filename.is_absolute():
-    filename = Path(args.outdir) / filename
-args.filename = str(filename)
+
+args.filename = make_absolute(outdir, filename)
+
+localfile = args.localfile
+if localfile:
+    localfile = make_absolute(outdir, localfile)
+    matching_files = glob.glob(args.localfile)
+    if matching_files:
+        args.localfile = matching_files[0]
 
 generate(args)
 
